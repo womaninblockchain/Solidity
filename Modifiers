@@ -1,0 +1,39 @@
+pragma solidity
+
+
+contract HelloworldContract {
+    string word = 'Hello world';
+    address owner; //dueño de la billetera 
+    
+    
+    //constructor OWNER
+    function HelloworldContract {
+        owner = msg.sender;
+        
+    }
+    
+    //MODIFIERS, solo el dueño puede modificar
+    
+    modifier onlyOwner {
+        if (owner != msg.sender) {
+            throw;
+            _;
+            
+        } else {
+            
+        }
+    }
+    
+    
+    function getWord() constant returns(string) {
+        return word;
+        
+    }
+    
+    function setWord(string newWord) onlyOwner returns(string){
+        if (owner != msg.sender) {
+            return 'No eres el creador'//msg sender, es quien llama al contrato
+        word = newWord;
+        return 'Si eres el creador';
+    }
+}
