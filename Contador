@@ -1,0 +1,40 @@
+pragma solidity >=0.7.0 <0.9.0;
+
+contract Contador {
+    uint256 count; // es el integer mas utilizado
+    
+    
+    
+    //funcion de inicio al deploy (nsolo puede llamarse una vez)
+    function Contador(uint256 _count) public {
+        count = _count;
+        
+    }
+    
+    
+    function setCount(uint256 _count) public {
+        count = _count;
+    }
+    
+    
+    function incrementCount() public {
+        count += 1; //incrementa el valor de la variable en uno 
+    }
+    
+    
+    //view = Le dice al nodo, que la funcion no va a cambiar el estado del smart contract, solo lo lee.
+    //return = Cuando hago una funcion get, lo coloco para declarar el tipo de variable.
+    
+    function getCount() public view returns (uint256){
+        return count;
+        
+        
+    }
+    
+    
+    //pure = Ni escribe ni lee variables, es restrictiva. 
+    
+    function getNumber() public pure returns (uint256){
+        return 34;
+    }
+    
