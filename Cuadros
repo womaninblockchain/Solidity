@@ -1,0 +1,57 @@
+//CONTRATO ASOCIADO A CUADROS Y address - RECUENTO Y OBTENCION DE DATA.
+//Estructuras, Arrays , mapping
+
+
+pragma solidity >=0.7.0 <0.9.0;
+
+contract Cuadros {
+    address owner; //Esto se utiliza para especificar dueño
+    uint256 precio;
+    uint256[] identificadores;  //Registro de los cuadros
+    mapping(address => cuadro) cuadros;
+    struct Cuadro { //estructura - objeto
+        uint256 identificador;
+        string pintor;
+        uint32 año; //uint32 - El bjetivo es optimizar el consumo de gas
+        uint32 pais;
+    }
+    //Un modificador, filtra llamadas y devuelve contrato modificado
+    
+    modifier precioFiltro(uint256 _precio) {
+        require (_precio == precio);
+        _; // (ejecuta la funcion)
+    }
+    
+    //Inicializo owner
+    constructor(uint256 _precio) public {
+        owner = msg.sender;
+        precio = _precio;
+    }
+    
+    //Dar de alta los cuadros
+    
+    function addCuadro(uint256 _id, string memory _pintor, uint32 _año, uint32 _pais) external precioFiltro(msg.value) payable{
+        identificadores. push(_id);
+        cuadros [msg.sender].identificador = _id; //la clave tiene el valor de la direccion del usuario  invoca la funcion
+        cuadros [msg.sender].pintor = _pintor;
+        cuadros [msg.sender].año = _año;
+        cuadros [msg.sender].pais =  _pais;
+        
+    } 
+    
+    //Cuantos cuadros hay
+    //cuenta items del array y los retorna
+    
+    function getIdentificadores() external view returns(uint256) {
+        return identificadores.length; 
+    }
+    
+    function getCuadro() external view returns(string memory pintor, uint32 año, uint32 pais) {
+        pintor = cuadros[msg.sender].pintor;
+        año = cuadros[msg.sender].año;
+        pais = cuadros[msg.sender].pais;
+        
+    }
+}
+
+
