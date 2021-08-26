@@ -1,0 +1,63 @@
+pragma solidity >=0.7.0 <0.9.0;
+
+//Seguir el paso a paso BASE de Solidity - IMPORTANTE!!
+//https://eips.ethereum.org/EIPS/eip-20
+contract xCoin{
+    
+    string public name;
+    string public symbol;
+    uint8 public decimals;
+    uint256 public totalSupply;
+    mapping(address => uint256) public balanceOf; //Asocia los balances para cada Direccion.
+    mapping(address => mapping(address => uint256)) public allowance; //Los mappings pueden anidarse con otros - Añado a quien permito que maneje los tokens y su cantidad.
+    
+    //Funcion de inicio del contrato
+    constructor public() {
+        name = "xCoin";
+        symbol = "xS";
+        decimals = 20;
+        totalSupply = 2000000 * (uint256(10) ** decimals); //El numero total de tokens , lo multiplico y lo elevo.
+        balanceOf[msg.sender] = totalSupply; //Asignamos el dueño de TODOS los tokens.
+        
+    }
+    
+    //Declaro Evento: Lo usamos para el llamado la accion y se registran en el log. 
+    event Transfer(address indexed _from, address indexed _to, uint256 _value);
+    event Approval(address indexed _owner, address indexed _spender, uint256 _value);
+
+
+    //Funcion para transferir token de una address a otra address
+    
+    function transfer(address _to, uint256 _value) public returns (bool success){
+        require(balanceOf[msg.sender] >= _value);
+        
+        //compensar = quito saldo de una wallet y la paso a otra.
+        balanceOf[msg.sender] -= _value; //resto
+        balanceOf[_to] += _value; //sumo
+        emit Transfer(msg.sender, _to, _value);
+        
+        return true;
+        
+    }
+    
+    //Spender: Es quien autoriza
+    //En esta funcion tenemos el EMIT del EVENT.
+    function approve(address _spender, uint256 _value) public returns (bool success){
+        allowance[msg.sender][_spender] = _value; //Asigno a la persona autorizada y la cantidad de tokens.
+        emit Approval(msg.sender, _spender, _value);
+        return true;
+
+    }
+    //Momento de la transferencia
+    function transferFrom(address _from, address _to, uint256 _value) public returns (bool success){
+        require(balanceOf[_from] >= _value); //Compruebo que el dueño tenga la cantidad minima de tokens.
+        require(allowance[_From][msg.sender] >= _value); //Compruebo que quien haga la transaccion este autorizado
+        balanceOf[_from] -= _value; //Quito de una cuenta
+        balanceOf[_to] += _value; //Agrego en la otra cuenta
+        allowance[_from][msg.sender] -= _value; //Compenso mapeos
+        emit Transfer(_from, _to, _value);
+        return true;
+    }
+    
+}
+
